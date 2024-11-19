@@ -3,14 +3,14 @@
 
 class Mpz {
 public:
-    mpz_t d;
+    mpz_t d{};
 
     Mpz(const Mpz&);
-    Mpz(const mpz_t);
-    Mpz(const unsigned long int);
-    Mpz(const signed long int);
-    Mpz(const char *const str, const int base);
-    Mpz(const char *const str);
+    explicit Mpz(const mpz_t);
+    explicit Mpz(unsigned long int);
+    explicit Mpz(signed long int);
+    Mpz(const char * str, int base);
+    explicit Mpz(const char *str);
 
     Mpz& operator=(const Mpz& other);
 
@@ -73,14 +73,11 @@ Mpz::~Mpz(){
     mpz_clear(d);
 }
 
-//extern char const mod[] = "fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f";
-
-//template<const char * modval>
 class Modnum : public Mpz {
 public:
     const static Mpz m; // check destructor
 
-    Modnum(const Mpz);
+    explicit Modnum(const char *);
 
     Modnum& operator+=(const Modnum& rhs);
     friend Modnum operator+(Modnum lhs, const Modnum& rhs) {
@@ -89,21 +86,17 @@ public:
     }
 };
 
-//typedef Modnum<mod> secpModnum;
-
-//template<> secpModnum::Modnum(const Mpz src) : Mpz(src) {
-Modnum::Modnum(const Mpz src) : Mpz(src) {
+Modnum::Modnum(const char *src) : Mpz(src) {
     mpz_mod(d, d, m.d);
 };
 
-//template<> secpModnum& secpModnum::operator+=(const Modnum& rhs) {
 Modnum& Modnum::operator+=(const Modnum& rhs) {
     mpz_add(d, d, rhs.d);
     mpz_mod(d, d, m.d);
     return *this;
 }
 
-const Mpz Modnum::m = "fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f";
+const Mpz Modnum::m("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
 
 int main() {
     Modnum a("79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798");
