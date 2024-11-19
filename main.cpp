@@ -1,6 +1,17 @@
 #include <gmp.h>
 #include <iostream>
 
+#define bin_op_decl(T, O) \
+friend T operator O (T lhs, const T& rhs)
+
+#define bin_op_def(T, O)             \
+T operator O (T lhs, const T& rhs){  \
+    lhs += rhs;                      \
+    return lhs;                      \
+}
+
+class Mpz;
+
 class Mpz {
 public:
     mpz_t d{};
@@ -15,16 +26,10 @@ public:
     Mpz& operator=(const Mpz& other);
 
     Mpz& operator+=(const Mpz& rhs);
-    friend Mpz operator+(Mpz lhs, const Mpz& rhs){
-        lhs += rhs;
-        return lhs;
-    }
+    bin_op_decl(Mpz, +);
 
     Mpz& operator%=(const Mpz& rhs);
-    friend Mpz operator%(Mpz lhs, const Mpz& rhs){ // ck template op
-        lhs %= rhs;
-        return lhs;
-    }
+    bin_op_decl(Mpz, %);
 
     ~Mpz();
 };
@@ -64,14 +69,20 @@ Mpz& Mpz::operator+=(const Mpz& rhs) {
     return *this;
 }
 
+bin_op_def(Mpz, +)
+
 Mpz& Mpz::operator%=(const Mpz& rhs) {
     mpz_mod(d, d, rhs.d);
     return *this;
 }
 
+bin_op_def(Mpz, %)
+
 Mpz::~Mpz(){
     mpz_clear(d);
 }
+
+class Modnum;
 
 class Modnum : public Mpz {
 public:
@@ -80,20 +91,32 @@ public:
     explicit Modnum(const char *);
 
     Modnum& operator+=(const Modnum& rhs);
-    friend Modnum operator+(Modnum lhs, const Modnum& rhs) {
-        lhs += rhs;
-        return lhs;
-    }
+    bin_op_decl(Modnum, +);
+
+    void print(int);
+    void print();
 };
 
 Modnum::Modnum(const char *src) : Mpz(src) {
     mpz_mod(d, d, m.d);
-};
+}
 
 Modnum& Modnum::operator+=(const Modnum& rhs) {
     mpz_add(d, d, rhs.d);
     mpz_mod(d, d, m.d);
     return *this;
+}
+
+bin_op_def(Modnum, +)
+
+void Modnum::print(int base) {
+    char* s = mpz_get_str(nullptr, base, d);
+    std::cout << s << std::endl;
+    free(s);
+}
+
+void Modnum::print() {
+    print(16);
 }
 
 const Mpz Modnum::m("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
@@ -102,8 +125,6 @@ int main() {
     Modnum a("79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798");
     Modnum b("483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8");
     Modnum c = a + b;
-    char* s = mpz_get_str(nullptr, 16, c.d);
-    std::cout << s << std::endl;
-    free(s);
+    c.print();
     return 0;
 }

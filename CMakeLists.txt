@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(simpleMpzSecp)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 add_library(gmp STATIC IMPORTED) # or STATIC instead of SHARED
 set_target_properties(gmp PROPERTIES
