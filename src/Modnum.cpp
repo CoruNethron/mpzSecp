@@ -2,31 +2,22 @@
 #include <iostream>
 
 Modnum::Modnum(const char *src) : Mpz(src) {
-    mpz_mod(d, d, m.d);
+    Mpz::operator%=(m);
 }
 
-Modnum& Modnum::operator+=(const Modnum& rhs) {
-    mpz_add(d, d, rhs.d);
-    mpz_mod(d, d, m.d);
-    return *this;
-}
+#define mod_assign_op_def(D, B, O, A)  \
+D& D::operator A(const D& rhs) {       \
+    B::operator A(rhs);                \
+    B::operator%=(m);                  \
+    return *this;                      \
+ } bin_op_def(D, O, A)
 
-bin_op_def(Modnum, +, +=)
+mod_assign_op_def(Modnum, Mpz, +, +=)
 
-Modnum& Modnum::operator-=(const Modnum& rhs) {
-    mpz_sub(d, d, rhs.d);
-    mpz_mod(d, d, m.d);
-    return *this;
-}
-
-bin_op_def(Modnum, -, -=)
+mod_assign_op_def(Modnum, Mpz, -, -=)
 
 void Modnum::print(int base) {
     char* s = mpz_get_str(nullptr, base, d);
     std::cout << s << std::endl;
     free(s);
-}
-
-void Modnum::print() {
-    print(16);
 }
