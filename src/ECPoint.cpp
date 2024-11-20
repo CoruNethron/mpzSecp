@@ -1,9 +1,10 @@
 #include "ECPoint.h"
 
-bool ECPoint::operator==(const ECPoint& rhs) {
+bool ECPoint::operator==(const ECPoint& rhs) const {
     return x == rhs.x && y == rhs.y;
 }
 
+/* ~~~ Double ~~~ */
 ECPoint ECPoint::operator~() const {
     ECPoint r;
     r.y = x * x;
@@ -13,7 +14,9 @@ ECPoint ECPoint::operator~() const {
     r.y = r.y * ( x - r.x ) - y;
     return r;
 }
+/* ~~~ Double ~~~ */
 
+/* ~~~ Add ~~~ */
 ECPoint& ECPoint::operator +=(const ECPoint& rhs) {
     if( *this == rhs ) *this = ~*this;
     else if( this->x == rhs.x ) y = -y;
@@ -24,28 +27,19 @@ ECPoint& ECPoint::operator +=(const ECPoint& rhs) {
     }
     return *this;
 }
+bin_op_def(ECPoint, +, +=)
+/* ~~~ Add ~~~ */
 
-ECPoint operator+(ECPoint lhs, const ECPoint& rhs) {
-    lhs += rhs;
-    return lhs;
-}
-
-ECPoint& ECPoint::operator *=(const Mpz& rhs){
-    bool assigned = false;
+/* ~~~ Mul ~~~ */
+ECPoint& ECPoint::operator *=(const Mpz& scalar){
     ECPoint r;
-    Mpz rhcp = rhs;
-    while(mpz_sgn(rhcp.d)) {
-        if(mpz_tstbit(rhcp.d, 0)) {
-            if (assigned) {
-                r += (*this);
-            } else {
-                r = (*this);
-                assigned = true;
-            }
-        }
-        rhcp >>= 1ul;
-        *this = ~*this;
-    }
+    Mpz rhcp = scalar;
+    for(;mpz_sgn(rhcp.d) && !(mpz_tstbit(rhcp.d, 0) && (r = (*this)).x.d[0]._mp_size);
+        rhcp >>= 1ul,
+        *this = ~*this);
+    for(;mpz_sgn(rhcp.d);
+        rhcp >>= 1ul,
+        *this = ~*this) if(mpz_tstbit(rhcp.d, 0)) r += (*this);
     *this = r;
     return *this;
 }
@@ -58,3 +52,4 @@ ECPoint ECPoint::operator*(const Mpz& scalar) {
 ECPoint operator*(const Mpz& scalar, ECPoint& rhs) {
     return rhs * scalar;
 }
+/* ~~~ Mul ~~~ */

@@ -1,5 +1,18 @@
 #include "Mpz.h"
 
+const Mpz Mpz::mpz_num[10] = {
+        Mpz("0"),
+        Mpz("1"),
+        Mpz("2"),
+        Mpz("3"),
+        Mpz("4"),
+        Mpz("5"),
+        Mpz("6"),
+        Mpz("7"),
+        Mpz("8"),
+        Mpz("9")
+};
+
 Mpz::Mpz(const Mpz& b) {
     mpz_init_set(d, b.d);
 }
@@ -24,8 +37,12 @@ Mpz::~Mpz(){
     mpz_clear(d);
 }
 
-bool Mpz::operator==(const Mpz& rhs) {
+bool Mpz::operator==(const Mpz& rhs) const {
     return 0 == mpz_cmp(this->d, rhs.d);
+}
+
+bool Mpz::operator<(const Mpz& rhs) const {
+    return -1 == mpz_cmp(this->d, rhs.d);
 }
 
 // TODO: ck copy vs move assignment
@@ -41,23 +58,12 @@ assign_op_def(Mpz, *, *=, mpz_mul)
 assign_op_def(Mpz, %, %=, mpz_mod)
 assign_op_def(Mpz, /, /=, mpz_fdiv_q)
 
-Mpz &Mpz::operator>>=(const mp_bitcnt_t &rhs) {
-    mpz_tdiv_q_2exp(d, d, rhs);
-    return *this;
-}
-Mpz operator>>(Mpz lhs, const mp_bitcnt_t &rhs) {
-    lhs >>= rhs;
-    return lhs;
-}
-
-Mpz &Mpz::operator<<=(const mp_bitcnt_t &rhs) {
-    mpz_mul_2exp(d, d, rhs);
-    return *this;
-}
-Mpz operator<<(Mpz lhs, const mp_bitcnt_t &rhs) {
-    lhs <<= rhs;
-    return lhs;
-}
+assign_op_def_sub(Mpz, mp_bitcnt_t, >>, >>=, mpz_tdiv_q_2exp, rhs)
+assign_op_def_sub(Mpz, mp_bitcnt_t, <<, <<=, mpz_mul_2exp, rhs)
 
 un_op_def(Mpz, -, mpz_neg)
 un_op_def(Mpz, +, mpz_abs)
+
+int Mpz::operator|(const Mpz& other) const {
+    return mpz_legendre(this->d, other.d);
+}

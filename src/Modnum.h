@@ -12,13 +12,20 @@ public:
 
     void print(int = 16);
 
-    bool operator==(const Modnum& rhs);
+    bool operator==(const Modnum& rhs) const;
 
     un_bin_op_decl(Modnum, +, +=);
     un_bin_op_decl(Modnum, -, -=);
     un_bin_op_decl(Modnum, *, *=);
     un_bin_op_decl(Modnum, /, /=);
+    un_bin_op_decl_sub(Modnum, Mpz, ^, ^=);
 
     un_op_decl(Modnum, -);
     un_op_decl(Modnum, +);
+
+    int operator!() const; // legendre
+
+    Modnum operator ~() const; // msqrt
+
+    static const Modnum mod_num[10];
 };
