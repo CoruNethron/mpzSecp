@@ -1,13 +1,16 @@
-#include "src/Modnum.h"
+#include "src/ECPoint.h"
 
 const Mpz Modnum::m("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
+//const Mpz Modnum::m("61", 10);
 
 int main() {
-    Modnum a("79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798");
-    Modnum b("483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8");
-    Modnum c = b - a;
-    c.print();
-    b.print();
-    a.print();
+    ECPoint x{};
+    Mpz k("12345");
+
+    x = k * x;
+
+    x.x.print(10);
+    x.y.print(10);
+
     return 0;
 }

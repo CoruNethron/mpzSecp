@@ -10,8 +10,8 @@ set_target_properties(gmp PROPERTIES
 )
 
 set(SRC_DIR src)
-set(HEADER_FILES ${SRC_DIR}/Mpz.h ${SRC_DIR}/Modnum.h)
-set(SOURCES main.cpp ${SRC_DIR}/Mpz.cpp ${SRC_DIR}/Modnum.cpp ${HEADER_FILES})
+set(HEADER_FILES ${SRC_DIR}/Mpz.h ${SRC_DIR}/Modnum.h ${SRC_DIR}/ECPoint.h)
+set(SOURCES main.cpp ${SRC_DIR}/Mpz.cpp ${SRC_DIR}/Modnum.cpp ${SRC_DIR}/ECPoint.cpp ${HEADER_FILES})
 
 add_executable(simpleMpzSecp ${SOURCES})
 target_link_libraries(simpleMpzSecp gmp)
