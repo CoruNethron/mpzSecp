@@ -1,5 +1,6 @@
 #include "Mpz.h"
 
+// TODO: make it foo with caching // hashing
 const Mpz Mpz::mpz_num[10] = {
         Mpz("0"),
         Mpz("1"),
@@ -45,6 +46,10 @@ bool Mpz::operator<(const Mpz& rhs) const {
     return -1 == mpz_cmp(this->d, rhs.d);
 }
 
+int Mpz::operator|(const Mpz& other) const {
+    return mpz_legendre(this->d, other.d);
+}
+
 // TODO: ck copy vs move assignment
 Mpz& Mpz::operator=(const Mpz& other){
     if (this == &other) return *this;
@@ -55,15 +60,12 @@ Mpz& Mpz::operator=(const Mpz& other){
 assign_op_def(Mpz, +, +=, mpz_add)
 assign_op_def(Mpz, -, -=, mpz_sub)
 assign_op_def(Mpz, *, *=, mpz_mul)
-assign_op_def(Mpz, %, %=, mpz_mod)
 assign_op_def(Mpz, /, /=, mpz_fdiv_q)
+assign_op_def(Mpz, %, %=, mpz_mod)
+assign_op_def(Mpz, &, &=, mpz_and)
 
 assign_op_def_sub(Mpz, mp_bitcnt_t, >>, >>=, mpz_tdiv_q_2exp, rhs)
 assign_op_def_sub(Mpz, mp_bitcnt_t, <<, <<=, mpz_mul_2exp, rhs)
 
 un_op_def(Mpz, -, mpz_neg)
 un_op_def(Mpz, +, mpz_abs)
-
-int Mpz::operator|(const Mpz& other) const {
-    return mpz_legendre(this->d, other.d);
-}

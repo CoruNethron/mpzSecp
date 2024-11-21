@@ -5,6 +5,7 @@ bool ECPoint::operator==(const ECPoint& rhs) const {
 }
 
 /* ~~~ Double ~~~ */
+// TODO: array: prep (y + y), rem tree mul reduce, invert, expand mul tree, rest
 ECPoint ECPoint::operator~() const {
     ECPoint r;
     r.y = x * x;
@@ -17,6 +18,7 @@ ECPoint ECPoint::operator~() const {
 /* ~~~ Double ~~~ */
 
 /* ~~~ Add ~~~ */
+// TODO: array: prep ( x - rhs.x ), rem tree mul reduce, invert, expand mul tree, rest
 ECPoint& ECPoint::operator +=(const ECPoint& rhs) {
     if( *this == rhs ) *this = ~*this;
     else if( this->x == rhs.x ) y = -y;

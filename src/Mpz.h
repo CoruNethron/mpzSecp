@@ -4,6 +4,9 @@
 
 class Mpz;
 
+#define cmp_op_decl(T, O, R)                   \
+    R operator O (const T& rhs) const;
+
 #define un_op_decl(T, O)                       \
     T& operator O()
 
@@ -43,6 +46,8 @@ class Mpz {
 public:
     mpz_t d{};
 
+    static const Mpz mpz_num[10];
+
     Mpz(const Mpz&);
     explicit Mpz(const mpz_t);
     explicit Mpz(unsigned long int);
@@ -51,24 +56,22 @@ public:
 
     ~Mpz();
 
-    bool operator==(const Mpz& rhs) const;
-    bool operator<(const Mpz& rhs) const;
+    cmp_op_decl(Mpz, ==, bool);
+    cmp_op_decl(Mpz, <,  bool);
+    cmp_op_decl(Mpz, |, int);   // legendre
 
     Mpz& operator=(const Mpz& other);
 
     un_bin_op_decl(Mpz, +, +=);
     un_bin_op_decl(Mpz, -, -=);
     un_bin_op_decl(Mpz, *, *=);
-    un_bin_op_decl(Mpz, %, %=);
     un_bin_op_decl(Mpz, /, /=);
+    un_bin_op_decl(Mpz, %, %=);
 
+    un_bin_op_decl(Mpz, &, &=);
     un_bin_op_decl_sub(Mpz, mp_bitcnt_t, >>, >>=);
     un_bin_op_decl_sub(Mpz, mp_bitcnt_t, <<, <<=);
 
     un_op_decl(Mpz, -);
     un_op_decl(Mpz, +);
-
-    int operator|(const Mpz& other) const; // legendre
-
-    static const Mpz mpz_num[10];
 };
