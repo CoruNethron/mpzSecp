@@ -16,7 +16,7 @@ public:
                      Modnum _y = Modnum("483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8")) :
                      x(std::move(_x)), y(std::move(_y)) {} // TODO: ck std::move
 
-    cmp_op_decl(ECPoint, ==, bool);
+    cmp_op_decl(ECPoint, ==, bool);  // Equal
 
     ECPoint operator ~() const;      // Double
 

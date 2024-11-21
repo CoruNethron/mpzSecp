@@ -1,7 +1,5 @@
 #include "src/ECPoint.h"
 
-const Mpz Modnum::m("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
-
 int main() {
     ECPoint G{};
     Mpz k("12345");

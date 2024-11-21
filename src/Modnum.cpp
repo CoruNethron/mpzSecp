@@ -1,6 +1,8 @@
 #include "Modnum.h"
 #include <iostream>
 
+const Mpz Modnum::m("fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
+
 // TODO: make it foo with caching // hashing
 const Modnum Modnum::mod_num[10] = {
         Modnum("0"),
@@ -78,37 +80,6 @@ int Modnum::operator!() const {
 }
 
 Modnum Modnum::operator~() const {
-    if(1 != !*this) return mod_num[0];
-    else if((m & mpz_num[3]) == mpz_num[3])
-        return (*this) ^ ( ( m + mpz_num[1] ) >> 2 );
-
-    Mpz s = m - mpz_num[1];
-    Modnum e = mod_num[0];
-    while( mpz_tstbit(s.d, 0) == 0 ){
-        s >>= 1;
-        e += mod_num[1];
-    }
-
-    Modnum n = mod_num[2];
-    while( !n != -1 ) n += mod_num[1];
-
-    Modnum x = (*this) ^ ( (s + mpz_num[1]) >> 1 );
-    Modnum b = (*this) ^ s;
-    Modnum g = n ^ s;
-    Modnum r = e, gs = mod_num[0];
-
-    while(true) {
-        Modnum t = b;
-        Modnum q = mod_num[0];
-
-        for(; (q.d < r.d) && ( t != mod_num[1] ); t *= t, q+=mod_num[1]);
-
-        if( q == mod_num[0] ) return x;
-
-        gs = g ^ ( mod_num[2] ^ ( r - q - mod_num[1] ) );
-        g = ( gs * gs );
-        x *= gs;
-        b *= g;
-        r = q;
-    }
+    // if((1 != !*this) || ((m & mpz_num[3]) != mpz_num[3])) return mod_num[0];
+    return (*this) ^ ( ( m + mpz_num[1] ) >> 2 );
 }

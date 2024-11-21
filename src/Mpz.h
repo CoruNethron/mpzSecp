@@ -57,6 +57,7 @@ public:
     ~Mpz();
 
     cmp_op_decl(Mpz, ==, bool);
+    cmp_op_decl(Mpz, !=, bool);
     cmp_op_decl(Mpz, <,  bool);
     cmp_op_decl(Mpz, |, int);   // legendre
 

@@ -42,6 +42,10 @@ bool Mpz::operator==(const Mpz& rhs) const {
     return 0 == mpz_cmp(this->d, rhs.d);
 }
 
+bool Mpz::operator!=(const Mpz& rhs) const {
+    return !((*this) == rhs);
+}
+
 bool Mpz::operator<(const Mpz& rhs) const {
     return -1 == mpz_cmp(this->d, rhs.d);
 }
